@@ -5,22 +5,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "teacher", indexes = { @Index(columnList = "teacherId", name = "teacherId_index"),
+		@Index(columnList = "teacherName", name = "teacherName_index") })
 public class Teacher implements Serializable {
 
+	
+
+
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3581701958867447698L;
+
 	@Id
+	@Column(name = "teacherId")
 	private String teacherId;
+
 	private String teacherName;
 	private String teacherAddress;
 
-	@OneToMany(mappedBy="teacher",cascade= {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REMOVE})
+	@OneToMany(mappedBy = "teacher", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE })
 	private List<Ticket> ticketsList = new ArrayList<>();
-	
-	
 
 	public List<Ticket> getTicketsList() {
 		return ticketsList;
