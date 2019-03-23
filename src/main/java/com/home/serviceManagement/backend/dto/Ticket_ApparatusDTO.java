@@ -1,9 +1,10 @@
 package com.home.serviceManagement.backend.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class Ticket_ApparatusDTO {
+public class Ticket_ApparatusDTO implements Serializable {
 
 	private String ticketId;
 	private String apparatusId;

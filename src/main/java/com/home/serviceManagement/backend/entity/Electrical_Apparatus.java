@@ -3,15 +3,17 @@ package com.home.serviceManagement.backend.entity;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 
+
+
+/**Electrical_Apparatus.java - this entity expose the Electrical_Apparatus table
+ * @author Ranga Lankathilaka
+ * @version 1.0 
+ * @see Apparatus
+ */
 @Entity 
 @PrimaryKeyJoinColumn(name="apparatusId")  
 public class Electrical_Apparatus extends Apparatus {
 	
-	/**Electrical_Apparatus.java - this entity expose the Electrical_Apparatus table
-	 * @author Ranga Lankathilaka
-	 * @version 1.0 
-	 * @see Apparatus
-	 */
 
 	private boolean warrenty;
 	private int warrentyPeriod;

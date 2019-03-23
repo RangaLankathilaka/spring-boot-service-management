@@ -21,6 +21,8 @@
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
+	
+	
 
 	<dependencies>
 		<dependency>
@@ -51,6 +53,36 @@
 			<version>3.23.1-GA</version>
 		</dependency>
 
+
+		<!-- start second level caching -->
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+
+		<dependency>  
+    <groupId>net.sf.ehcache</groupId>  
+    <artifactId>ehcache</artifactId>  
+    <version>2.10.3</version>  
+</dependency>  
+      
+     
+<dependency>  
+    <groupId>org.hibernate</groupId>  
+    <artifactId>hibernate-ehcache</artifactId>  
+    <version>5.2.16.Final</version>  
+</dependency> 
+
+
+   <dependency>
+    <groupId>org.hibernate</groupId>
+    <artifactId>hibernate-core</artifactId>
+    <version>5.2.16.Final</version>
+</dependency>
+	<!-- end second level caching -->
+
+
 	</dependencies>
 
 	<build>
@@ -58,10 +90,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-			<!-- 	<configuration>
-					<finalName>sb-service-management</finalName>
-					
-				</configuration> -->
+				<!-- <configuration> <finalName>sb-service-management</finalName> </configuration> -->
 
 			</plugin>
 		</plugins>

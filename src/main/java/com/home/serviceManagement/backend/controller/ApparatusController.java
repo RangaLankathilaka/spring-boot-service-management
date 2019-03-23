@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.home.serviceManagement.backend.cache.ApparatusCache;
 import com.home.serviceManagement.backend.dto.ApparatusDTO;
 import com.home.serviceManagement.backend.service.ApparatusService;
 
@@ -22,6 +24,8 @@ import com.home.serviceManagement.backend.service.ApparatusService;
 public class ApparatusController {
 	@Autowired
 	private ApparatusService apparatusService;
+	@Autowired
+	private ApparatusCache apparatuscache;
 	@GetMapping
 	public List<ApparatusDTO> findAll(){
 		return apparatusService.findAllApparatus();
@@ -30,6 +34,17 @@ public class ApparatusController {
 	@GetMapping(value="/{apparatusId}")
 	public ApparatusDTO findApparatus(@PathVariable("apparatusId") String apparatusId){
 		return apparatusService.findApparatus(apparatusId);
+	}
+	
+	@GetMapping(value="/apparatus-names")
+	public List<String> getApparatusNames(){
+		return apparatuscache.getApparatusName();
+	}
+	
+	@GetMapping(params = {"action=search", "apparatusName"})
+	public ApparatusDTO getApparatusListCache(@RequestParam("apparatusName") String apparatusName){
+		System.out.println(apparatusName);
+		return apparatuscache.getApparatusDetail(apparatusName);
 	}
 	
 	@PutMapping(value="/{apparatusId}")

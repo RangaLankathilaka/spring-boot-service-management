@@ -1,9 +1,10 @@
 package com.home.serviceManagement.backend.dto;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TeacherDTO {
+public class TeacherDTO implements Serializable {
 	private String teacherId;
 	private String teacherName;
 	private String teacherAddress;

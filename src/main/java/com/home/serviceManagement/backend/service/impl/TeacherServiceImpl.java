@@ -3,8 +3,14 @@ package com.home.serviceManagement.backend.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,14 +27,20 @@ import com.home.serviceManagement.backend.util.TicketId;
 
 @Service
 @Transactional
+@CacheConfig(cacheNames = {"teacherCache","oneteacherCache"})
 public class TeacherServiceImpl implements TeacherService {
 
 	@Autowired
 	private TeacherRepository teacherRepository;
 	
+	private static final Logger logger = LoggerFactory.getLogger(TeacherServiceImpl.class);
+	
 	@Transactional(readOnly=true)
+	@Cacheable
 	@Override
 	public List<TeacherDTO> findAllTeacher() {
+		
+		logger.info("Calling Repository method to retrieve event");
 		
 		List<Teacher> findAll = teacherRepository.findAll();
 		List<TeacherDTO> teList=new ArrayList<TeacherDTO>();
@@ -39,7 +51,6 @@ public class TeacherServiceImpl implements TeacherService {
 			TeacherDTO teacherDTO=new TeacherDTO();
 			BeanUtils.copyProperties(teacher, teacherDTO);
 			
-			System.out.println(teacher.getTicketsList());
 //			retreieve ticket
 			List<Ticket> ticketsList = teacher.getTicketsList();
 			ticketsList.forEach(ticket->{
@@ -55,6 +66,9 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 
 	@Transactional(readOnly=true)
+	
+	@Cacheable
+	@CacheEvict(allEntries = true)
 	@Override
 	public TeacherDTO findTeacher(String teacherId) {
 		Teacher teacher = teacherRepository.findById(teacherId).get();
@@ -74,6 +88,8 @@ public class TeacherServiceImpl implements TeacherService {
 		return teacherDTO;
 	}
 
+	@Cacheable
+	@CacheEvict(allEntries = true)
 	@Override
 	public void saveTeacher(String teacherId, TeacherDTO teacherDTO) {
 		System.out.println(teacherDTO);
@@ -109,17 +125,21 @@ public class TeacherServiceImpl implements TeacherService {
 			List<Ticket_ApparatusDTO> ticket_ApparatusDTOs = ticketDTO.getTicket_ApparatusDTOs();
 			
 			List<Ticket_Appratus> ticket_AppratusList=new ArrayList<>();
-			ticket_ApparatusDTOs.forEach(ticket_appratusDTO->{
-				Ticket_Appratus ticket_Appratus=new Ticket_Appratus();
-				BeanUtils.copyProperties(ticket_appratusDTO, ticket_Appratus);
-				
-				ticket_Appratus.setTicket_Apparatus_PK(new Ticket_Apparatus_PK("TRN"+timeStamp+ticketNumber[0]++,ticket_appratusDTO.getApparatusId()));
-				
-				
-				ticket_AppratusList.add(ticket_Appratus);
-				
-			});
-			ticket.setTicket_Appratus(ticket_AppratusList);
+			
+			if(ticket_ApparatusDTOs!=null) {
+				ticket_ApparatusDTOs.forEach(ticket_appratusDTO->{
+					Ticket_Appratus ticket_Appratus=new Ticket_Appratus();
+					BeanUtils.copyProperties(ticket_appratusDTO, ticket_Appratus);
+					
+					ticket_Appratus.setTicket_Apparatus_PK(new Ticket_Apparatus_PK("TRN"+timeStamp+ticketNumber[0]++,ticket_appratusDTO.getApparatusId()));
+					
+					
+					ticket_AppratusList.add(ticket_Appratus);
+					
+				});
+				ticket.setTicket_Appratus(ticket_AppratusList);
+			}
+			
 			tickets.add(ticket);
 		});
 		
@@ -128,7 +148,8 @@ public class TeacherServiceImpl implements TeacherService {
 		teacherRepository.save(teacher);
 		
 	}
-
+	@Cacheable
+	@CacheEvict(allEntries = true)
 	@Override
 	public boolean updateTeacher(String teacherId, TeacherDTO teacherDTO) {
 
@@ -146,6 +167,8 @@ public class TeacherServiceImpl implements TeacherService {
 		
 	}
 
+	@Cacheable
+	@CacheEvict(allEntries = true)
 	@Override
 	public boolean deleteTeacher(String teacherId) {
 		teacherRepository.deleteById(teacherId);

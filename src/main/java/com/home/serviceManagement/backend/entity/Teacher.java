@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,9 +13,14 @@ import javax.persistence.Index;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
 @Table(name = "teacher", indexes = { @Index(columnList = "teacherId", name = "teacherId_index"),
 		@Index(columnList = "teacherName", name = "teacherName_index") })
+
+
 public class Teacher implements Serializable {
 
 	
@@ -33,7 +39,9 @@ public class Teacher implements Serializable {
 	private String teacherName;
 	private String teacherAddress;
 
+
 	@OneToMany(mappedBy = "teacher", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE })
+	
 	private List<Ticket> ticketsList = new ArrayList<>();
 
 	public List<Ticket> getTicketsList() {

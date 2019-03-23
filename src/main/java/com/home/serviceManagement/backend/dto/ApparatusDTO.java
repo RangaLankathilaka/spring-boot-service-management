@@ -1,12 +1,13 @@
 package com.home.serviceManagement.backend.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.home.serviceManagement.backend.entity.Ticket_Appratus;
 
-public class ApparatusDTO {
+public class ApparatusDTO implements Serializable {
 
 	private String apparatusId;
 	private String apparatusName;

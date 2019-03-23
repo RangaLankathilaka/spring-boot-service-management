@@ -1,12 +1,13 @@
 package com.home.serviceManagement.backend.dto;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.home.serviceManagement.backend.entity.Teacher;
 
-public class TicketDTO {
+public class TicketDTO implements Serializable{
 
 	private String ticketId;
 	private Date date;

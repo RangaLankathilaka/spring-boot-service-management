@@ -1,6 +1,7 @@
 package com.home.serviceManagement.backend.entity;
 
 import java.io.Serializable;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,18 +15,21 @@ import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+
+
+/**
+ * Apparatus.java - this entity expose the apparatus table
+ * 
+ * @author Ranga Lankathilaka
+ * @version 1.0
+ * 
+ */
+
 @Entity
 @Table(name = "Apparatus")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Apparatus implements Serializable {
 
-	/**
-	 * Apparatus.java - this entity expose the apparatus table
-	 * 
-	 * @author Ranga Lankathilaka
-	 * @version 1.0
-	 * 
-	 */
 	private static final long serialVersionUID = -5094252394390263312L;
 	@Id
 	@Column(name = "apparatusId")
