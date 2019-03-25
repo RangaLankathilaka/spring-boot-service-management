@@ -3,36 +3,35 @@ package com.home.serviceManagement.backend.entity;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 
-
-
-/**Electrical_Apparatus.java - this entity expose the Electrical_Apparatus table
+/**
+ * Electrical_Apparatus.java - this entity expose the Electrical_Apparatus table
+ * 
  * @author Ranga Lankathilaka
- * @version 1.0 
+ * @version 1.0
  * @see Apparatus
  */
-@Entity 
-@PrimaryKeyJoinColumn(name="apparatusId")  
+@Entity
+@PrimaryKeyJoinColumn(name = "apparatusId")
 public class Electrical_Apparatus extends Apparatus {
-	
 
-	private boolean warrenty;
+	private String warrenty;
 	private int warrentyPeriod;
 
 	public Electrical_Apparatus() {
 		super();
 	}
 
-	public Electrical_Apparatus(boolean warrenty, int warrentyPeriod) {
+	public Electrical_Apparatus(String warrenty, int warrentyPeriod) {
 		super();
 		this.warrenty = warrenty;
 		this.warrentyPeriod = warrentyPeriod;
 	}
 
-	public boolean isWarrenty() {
+	public String getWarrenty() {
 		return warrenty;
 	}
 
-	public void setWarrenty(boolean warrenty) {
+	public void setWarrenty(String warrenty) {
 		this.warrenty = warrenty;
 	}
 

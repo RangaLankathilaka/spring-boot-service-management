@@ -38,6 +38,7 @@ public class Apparatus implements Serializable {
 	private int apparatusCount;
 	private String apparatusType;
 	private BigDecimal apparatusPrice;
+	
 
 	@OneToMany(mappedBy = "apparatus", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE })
 	private List<Ticket_Appratus> ticket_Appratus = new ArrayList<>();

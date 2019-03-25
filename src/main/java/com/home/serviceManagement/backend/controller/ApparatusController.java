@@ -49,6 +49,8 @@ public class ApparatusController {
 	
 	@PutMapping(value="/{apparatusId}")
 	public void saveApparatus(@PathVariable("apparatusId") String apparatusId,@RequestBody ApparatusDTO apparatusDTO) {
+		
+		System.out.println("controller >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "+apparatusDTO);
 		apparatusService.save(apparatusId, apparatusDTO);
 	}
 	

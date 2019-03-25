@@ -9,8 +9,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,11 +41,21 @@ public class TeacherServiceImpl implements TeacherService {
 	@Transactional(readOnly=true)
 	@Cacheable
 	@Override
-	public List<TeacherDTO> findAllTeacher() {
+	public List<TeacherDTO> findAllTeacher(int pageNumber,int pageElemenr,String sortType) {
 		
 		logger.info("Calling Repository method to retrieve event");
+		String sortby=null;
+		if(sortType.equals("id")) {
+			sortby="teacherId";
+		}else if(sortType.equals("name")) {
+			sortby="teacherName";
+		}
+		Pageable sortedByPriceDesc = PageRequest.of(pageNumber, pageElemenr, Sort.by(""+sortby+"").descending());//begin from 0
+		                                                                                           //  PageRequest.of(0, 10) this returns 1st page 10 element,2nd page only has 3 element
+		                                                                                        // (1,3)- fist of all, all elements devide by 3 and sparate pageing accordingly,2nd page with 3 element
 		
-		List<Teacher> findAll = teacherRepository.findAll();
+		//List<Teacher> findAll = teacherRepository.findAll(sortedByPriceDesc);
+		Page<Teacher> findAll = teacherRepository.findAll(sortedByPriceDesc);
 		List<TeacherDTO> teList=new ArrayList<TeacherDTO>();
 	
 		
@@ -146,6 +159,7 @@ public class TeacherServiceImpl implements TeacherService {
 		teacher.setTicketsList(tickets);
 		System.out.println(teacher);
 		teacherRepository.save(teacher);
+		
 		
 	}
 	@Cacheable

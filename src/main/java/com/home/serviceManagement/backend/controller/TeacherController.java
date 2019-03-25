@@ -24,10 +24,10 @@ public class TeacherController {
 	@Autowired
 	private TeacherService teacherService;
 
-	@GetMapping
-	public List<TeacherDTO> findAll() {
+	@GetMapping(value="/{pageNumber}/{pageElement}/{sortType}")
+	public List<TeacherDTO> findAll(@PathVariable("pageNumber") int pageNumber,@PathVariable("pageElement") int pageElement,@PathVariable("sortType") String sortType) {
 
-		return teacherService.findAllTeacher();
+		return teacherService.findAllTeacher(pageNumber,pageElement,sortType);
 
 	}
 	
@@ -54,5 +54,7 @@ public class TeacherController {
 	public boolean deleteTeacher(@PathVariable("teacherId") String teacherId) {
 		return teacherService.deleteTeacher(teacherId);
 	}
+	
+	
 
 }
