@@ -3,6 +3,12 @@ package com.home.serviceManagement.backend.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Provider;
+import javax.persistence.EntityManager;
+
+import com.home.serviceManagement.backend.dto.joinDto.TeacherTicketDTO;
+import com.home.serviceManagement.backend.entity.*;
+import com.querydsl.core.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -20,23 +26,43 @@ import org.springframework.transaction.annotation.Transactional;
 import com.home.serviceManagement.backend.dto.TeacherDTO;
 import com.home.serviceManagement.backend.dto.TicketDTO;
 import com.home.serviceManagement.backend.dto.Ticket_ApparatusDTO;
-import com.home.serviceManagement.backend.entity.Teacher;
-import com.home.serviceManagement.backend.entity.Ticket;
-import com.home.serviceManagement.backend.entity.Ticket_Apparatus_PK;
-import com.home.serviceManagement.backend.entity.Ticket_Appratus;
 import com.home.serviceManagement.backend.repository.TeacherRepository;
 import com.home.serviceManagement.backend.service.TeacherService;
 import com.home.serviceManagement.backend.util.TicketId;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+
+
 
 @Service
 @Transactional
-@CacheConfig(cacheNames = {"teacherCache","oneteacherCache"})
+//@CacheConfig(cacheNames = {"teacherCache","oneteacherCache"})
+@CacheConfig(cacheNames = {"teacherCache"})
 public class TeacherServiceImpl implements TeacherService {
 
 	@Autowired
 	private TeacherRepository teacherRepository;
 	
+	@Autowired
+	private Provider<EntityManager> entityManager;
+
+	
 	private static final Logger logger = LoggerFactory.getLogger(TeacherServiceImpl.class);
+
+
+
+//	@Override
+//	public void executeQuery() {
+//
+//		JPAQueryFactory query = new JPAQueryFactory(entityManager);
+//		QTeacher teacher = QTeacher.teacher;
+//		Teacher c = queryFactory.selectFrom(teacher)
+//				.where(user.login.eq("David"))
+//				.fetchOne();
+//	}
+//
+	
+	
+	
 	
 	@Transactional(readOnly=true)
 	@Cacheable
@@ -81,7 +107,6 @@ public class TeacherServiceImpl implements TeacherService {
 	@Transactional(readOnly=true)
 	
 	@Cacheable
-	@CacheEvict(allEntries = true)
 	@Override
 	public TeacherDTO findTeacher(String teacherId) {
 		Teacher teacher = teacherRepository.findById(teacherId).get();
@@ -188,5 +213,131 @@ public class TeacherServiceImpl implements TeacherService {
 		teacherRepository.deleteById(teacherId);
 		return true;
 	}
+
+
+	@Cacheable
+	@Override
+	public List<TeacherDTO> executeQuery() {
+		JPAQueryFactory query = new JPAQueryFactory(entityManager);
+		QTeacher teacher = QTeacher.teacher;
+
+		/**
+		 * comma represent 'and' operation
+		 * Basic query
+		 *
+
+		 */
+	/*	List<Teacher> teacherList = query.selectFrom(teacher)
+				.where(
+						teacher.teacherName.eq("nuwan"),
+						teacher.teacherAddress.eq("horana"))
+				.fetch();*/
+
+
+
+		/**
+		 * select teacherName from teacher where teacherAddress="Horana";
+		 * Basic query
+		 */
+	/*	List<String> teacherNameList = query.selectFrom(teacher)
+				.where(teacher.teacherAddress.eq("horana"))
+				.select(teacher.teacherName)
+				.fetch();*/
+
+
+
+
+
+
+
+
+		/**
+		 * Order
+		 * filter
+		 */
+
+		/*List<Teacher> teacherList = query.selectFrom(teacher)
+				.where(
+						teacher.teacherName.eq("nuwan"),
+						teacher.teacherAddress.eq("horana")).orderBy(teacher.teacherId.asc())
+				.fetch();
+*/
+		/**
+		 * Order with out where clause
+		 */
+
+
+		List<Teacher> teacherList = query.selectFrom(teacher)
+				.orderBy(teacher.teacherName.asc(),teacher.teacherId.desc())
+				.fetch();
+
+
+		List<TeacherDTO> teacherDtoList=new ArrayList<>();
+		teacherList.forEach(teacherEntity->{
+			TeacherDTO teacherDTO=new TeacherDTO();
+			BeanUtils.copyProperties(teacherEntity,teacherDTO);
+			teacherDtoList.add(teacherDTO);
+		});
+		return teacherDtoList;
+	}
+
+
+	/**
+	 * Three tables are joined and return List<Object>
+	 * @return
+	 */
+
+	@Override
+	public List<TeacherTicketDTO> executeQueryJoin() {
+		JPAQueryFactory query = new JPAQueryFactory(entityManager);
+		QTeacher teacher = QTeacher.teacher;
+		QTicket ticket=QTicket.ticket;
+		QTicket_Appratus ticket_appratus=QTicket_Appratus.ticket_Appratus;
+
+		List<Tuple> teacherTicketTuple = query.from(teacher)
+				.innerJoin(ticket)
+				.on(teacher.teacherId.eq(ticket.teacher.teacherId))
+				.innerJoin(ticket_appratus)
+				.on(ticket.ticketId.eq(ticket_appratus.ticket_Apparatus_PK.ticketId))
+				.where(teacher.teacherName.eq("Sanka"))
+				.select(teacher, ticket,ticket_appratus)
+				.fetch();
+
+		List<TeacherTicketDTO> teacherTicketDTOList=new ArrayList<>();
+
+		teacherTicketTuple.forEach(teacherTicket->{
+			TeacherTicketDTO teacherTicketDTO=new TeacherTicketDTO();
+			BeanUtils.copyProperties(teacherTicket.get(teacher),teacherTicketDTO);
+			BeanUtils.copyProperties(teacherTicket.get(ticket),teacherTicketDTO);
+			BeanUtils.copyProperties(teacherTicket.get(ticket_appratus),teacherTicketDTO);
+
+			teacherTicketDTO.setApparatusId(teacherTicket.get(ticket_appratus).getApparatus().getApparatusId());
+
+			teacherTicketDTOList.add(teacherTicketDTO);
+		});
+
+		return teacherTicketDTOList;
+
+
+	}
+
+/**
+ * *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ * 		 * Note different between QueryDSL 4.0.2+ vs old
+ * 		 * |||||||||||
+ * 		 * QCard qCard = QCard.card;
+ * 		 * List<Card> cards = getQuery().from(qCard)
+ * 		 *     .innerJoin(qCard.person).fetch()
+ * 		 *     .list(qCard);
+ * 		 *
+ * 		 *For QueryDSL 4.0.2+
+ * 		 *
+ * 		 *QCard qCard = QCard.card;
+ * 		 * List<Card> cards = getQuery().from(qCard)
+ * 		 *     .innerJoin(qCard.person).fetchJoin()
+ * 		 *     .select(qCard).fetch();
+ * 		 *
+ * 		 *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ */
 
 }

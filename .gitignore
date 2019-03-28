@@ -59,3 +59,7 @@ local.properties
 
 # PDT-specific
 .buildpath
+
+
+#intellij ide
+.idea/
