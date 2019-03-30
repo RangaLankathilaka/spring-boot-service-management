@@ -118,6 +118,13 @@
 
 
 
+
+
+
+
+
+
+
 			<!-- start Q-type source files generate -->
 			<plugin>
 				<groupId>com.mysema.maven</groupId>
@@ -135,6 +142,9 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			
+	
 
 			<!-- end Q-type source files generate -->
 		</plugins>

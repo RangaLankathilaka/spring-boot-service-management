@@ -75,3 +75,42 @@ select * from teacher te inner join ticket ti on te.teacherId=ti.teacherId where
 inner join three tables
 
 select * from teacher te inner join ticket ti on te.teacherId=ti.teacherId inner join ticket_appratus ta on ta.ticketId=ti.ticketId
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+http://download.eclipse.org/datatools/updates/1.12
+
+
+
+>>>>>Installing the Eclipse Marketplace Client
+In order to install and use plug-ins that extend Atelier's capabilities, you first need to install the Eclipse Marketplace Client:
+
+From your Eclipse/Atelier workspace, navigate to  command link Help > Install New Software from the main menu.
+Select http://download.eclipse.org/releases/photon in the Work with combo box.
+Wait for component table to populate.
+In the section General Purpose Tools, select Marketplace Client. You can find this selection more easily by filtering the results. For example, type "marketplace" in the filter text field.
+Click Next to advance to the Install Details page.
+Review your selection and click Next again.
+Read and accept the license agreement and click Finish.
+Wait for the installation to complete, and restart Atelier when prompted.
+
+
+
+
+
+
+
+
+
+
+
+In Eclipse Mars go to Help-> Install New Software
+Click on add button and paste the URL of the update site which is in our case: http://download.jboss.org/jbosstools/updates/development/mars/
+Now select the JBossAS Tools plugin and Click "Next"
+
+
